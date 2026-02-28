@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             people[detailIndex].timeline.push({
-                title: title,
+                title: title, // '타임'으로 사용됨
                 content: content
             });
 
