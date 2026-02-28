@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const formContainer = document.getElementById('form-container');
     const showFormBtn = document.getElementById('show-form-btn');
     const cancelBtn = document.getElementById('cancel-btn');
+    const photoInput = document.getElementById('photo');
+    const photoPreview = document.getElementById('photo-preview');
 
     // 로컬 스토리지에서 데이터 불러오기
     let people = JSON.parse(localStorage.getItem('people')) || [];
@@ -11,10 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // 모달 제어 함수
     function toggleModal() {
         formContainer.classList.toggle('hidden');
-        if (!formContainer.classList.contains('hidden')) {
+        if (formContainer.classList.contains('hidden')) {
+            personForm.reset();
+            resetPhotoPreview();
+        } else {
             document.getElementById('name').focus();
         }
     }
+
+    // 사진 프리뷰 리셋
+    function resetPhotoPreview() {
+        photoPreview.innerHTML = '<span>👤</span>';
+    }
+
+    // 사진 선택 시 프리뷰 업데이트
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                photoPreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
     // 화면에 목록 렌더링하는 함수
     function renderPeople() {
@@ -25,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const photoHtml = person.photo 
                 ? `<div class="card-img-wrapper"><img src="${person.photo}" class="card-img" alt="${person.name}"></div>`
-                : `<div class="card-img-wrapper"><span style="font-size: 40px;">👤</span></div>`;
+                : `<div class="card-img-wrapper"><span style="font-size: 60px;">👤</span></div>`;
 
             card.innerHTML = `
                 <button class="delete-btn" onclick="deletePerson(${index})">×</button>
@@ -43,16 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 이벤트 리스너
     showFormBtn.addEventListener('click', toggleModal);
-    cancelBtn.addEventListener('click', () => {
-        personForm.reset();
-        toggleModal();
-    });
+    cancelBtn.addEventListener('click', toggleModal);
 
     // 데이터 추가 이벤트
     personForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const photoFile = document.getElementById('photo').files[0];
+        const photoFile = photoInput.files[0];
         let photoDataUrl = '';
 
         if (photoFile) {
@@ -82,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         renderPeople();
-        personForm.reset();
         toggleModal();
     });
 

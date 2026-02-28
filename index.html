@@ -18,16 +18,22 @@
             <div class="modal-content">
                 <h2>새로운 인물 추가</h2>
                 <form id="person-form">
+                    <div class="photo-upload-section">
+                        <div id="photo-preview" class="photo-preview">
+                            <span>👤</span>
+                        </div>
+                        <label for="photo" class="photo-label">사진 선택</label>
+                        <input type="file" id="photo" accept="image/*" hidden>
+                    </div>
+
                     <div class="input-group">
                         <input type="text" id="name" placeholder="이름" required>
                         <input type="date" id="birthday" placeholder="생일">
                         <input type="text" id="affiliation" placeholder="소속">
                     </div>
-                    <div class="file-input-wrapper">
-                        <label for="photo">사진 선택 (선택 사항)</label>
-                        <input type="file" id="photo" accept="image/*">
-                    </div>
+                    
                     <textarea id="memo" placeholder="메모 (성격, 만난 장소 등)"></textarea>
+                    
                     <div class="button-group">
                         <button type="submit" class="save-btn">저장하기</button>
                         <button type="button" id="cancel-btn" class="cancel-btn">취소</button>
