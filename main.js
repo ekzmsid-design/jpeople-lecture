@@ -186,13 +186,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        timelineList.innerHTML = timeline.map(item => `
+        // 최신순으로 렌더링하기 위해 복사본을 만들어 뒤집거나, 인덱스를 계산해서 처리
+        timelineList.innerHTML = timeline.map((item, idx) => `
             <div class="timeline-item">
                 <span class="timeline-date">${item.date}</span>
                 <div class="timeline-text">${item.content}</div>
+                <button class="timeline-delete-btn" onclick="deleteTimelineItem(${idx})">×</button>
             </div>
-        `).reverse().join(''); // 최신순 정렬
+        `).reverse().join('');
     }
+
+    // 타임라인 항목 삭제 함수 (전역)
+    window.deleteTimelineItem = (itemIndex) => {
+        if (confirm('이 기록을 삭제하시겠습니까?')) {
+            people[detailIndex].timeline.splice(itemIndex, 1);
+            localStorage.setItem('people', JSON.stringify(people));
+            renderTimeline();
+        }
+    };
 
     // 타임라인 항목 추가
     timelineForm.addEventListener('submit', (e) => {
