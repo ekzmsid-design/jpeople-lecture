@@ -8,20 +8,31 @@
 </head>
 <body>
     <div class="container">
-        <h1>JPeople 인맥 관리</h1>
+        <header>
+            <h1>JPeople 인맥 관리</h1>
+            <button id="show-form-btn" class="main-add-btn">+ 인물 추가</button>
+        </header>
         
-        <form id="person-form" class="input-section">
-            <div class="input-group">
-                <input type="text" id="name" placeholder="이름" required>
-                <input type="date" id="birthday" placeholder="생일">
-                <input type="text" id="affiliation" placeholder="소속">
+        <!-- 인물 추가 폼 (기본적으로 숨김) -->
+        <div id="form-container" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2>새로운 인물 추가</h2>
+                <form id="person-form">
+                    <div class="input-group">
+                        <input type="text" id="name" placeholder="이름" required>
+                        <input type="date" id="birthday" placeholder="생일">
+                        <input type="text" id="affiliation" placeholder="소속">
+                    </div>
+                    <textarea id="memo" placeholder="메모 (성격, 만난 장소 등)"></textarea>
+                    <div class="button-group">
+                        <button type="submit" class="save-btn">저장하기</button>
+                        <button type="button" id="cancel-btn" class="cancel-btn">취소</button>
+                    </div>
+                </form>
             </div>
-            <textarea id="memo" placeholder="메모 (성격, 만난 장소 등)"></textarea>
-            <button type="submit" id="add-btn">추가하기</button>
-        </form>
+        </div>
 
         <div class="list-section">
-            <h2>저장된 명단</h2>
             <div id="people-list" class="people-grid">
                 <!-- 사람 정보가 여기에 추가됩니다 -->
             </div>
