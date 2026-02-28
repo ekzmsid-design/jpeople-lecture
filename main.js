@@ -14,11 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const groupTabs = document.getElementById('group-tabs');
     const personGroupSelect = document.getElementById('person-group');
+    const modalTitle = document.querySelector('#form-container h2');
 
     // 로컬 스토리지 데이터 불러오기
     let people = JSON.parse(localStorage.getItem('people')) || [];
     let groups = JSON.parse(localStorage.getItem('groups')) || [];
     let currentGroupId = 'all';
+    let editIndex = -1; // 수정 중인 인물의 인덱스 (-1이면 새 인물 추가)
 
     // 초기화 함수
     function init() {
@@ -27,12 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPeople();
     }
 
-    // 모달 제어 함수 (인물 추가)
+    // 모달 제어 함수 (인물 추가/수정)
     function togglePersonModal() {
         formContainer.classList.toggle('hidden');
         if (formContainer.classList.contains('hidden')) {
             personForm.reset();
             resetPhotoPreview();
+            editIndex = -1;
+            modalTitle.textContent = '새로운 인물 추가';
         } else {
             document.getElementById('name').focus();
         }
@@ -120,7 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 : `<div class="card-img-wrapper"><span style="font-size: 60px;">👤</span></div>`;
 
             card.innerHTML = `
-                <button class="delete-btn" onclick="deletePerson(${actualIndex})">×</button>
+                <div class="card-btns">
+                    <button class="edit-btn" onclick="editPerson(${actualIndex})">✎</button>
+                    <button class="delete-btn" onclick="deletePerson(${actualIndex})">×</button>
+                </div>
                 ${photoHtml}
                 <div class="card-content">
                     ${groupName ? `<span class="card-group-tag">${groupName}</span>` : ''}
@@ -133,6 +140,29 @@ document.addEventListener('DOMContentLoaded', () => {
             peopleList.appendChild(card);
         });
     }
+
+    // 인물 수정 함수 (전역)
+    window.editPerson = (index) => {
+        editIndex = index;
+        const person = people[index];
+        
+        // 폼 채우기
+        document.getElementById('name').value = person.name;
+        document.getElementById('birthday').value = person.birthday || '';
+        document.getElementById('affiliation').value = person.affiliation || '';
+        document.getElementById('person-group').value = person.groupId || '';
+        document.getElementById('memo').value = person.memo || '';
+        
+        if (person.photo) {
+            photoPreview.innerHTML = `<img src="${person.photo}" alt="Preview">`;
+        } else {
+            resetPhotoPreview();
+        }
+
+        modalTitle.textContent = '인물 정보 수정';
+        formContainer.classList.remove('hidden');
+        document.getElementById('name').focus();
+    };
 
     // 이벤트 리스너들
     showFormBtn.addEventListener('click', togglePersonModal);
@@ -168,21 +198,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 인물 추가 처리
+    // 인물 추가/수정 처리
     personForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const photoFile = photoInput.files[0];
         let photoDataUrl = '';
 
+        // 사진이 새로 선택된 경우
         if (photoFile) {
             photoDataUrl = await new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (e) => resolve(e.target.result);
                 reader.readAsDataURL(photoFile);
             });
+        } else if (editIndex !== -1) {
+            // 수정 모드이고 사진을 새로 선택하지 않은 경우 기존 사진 유지
+            photoDataUrl = people[editIndex].photo || '';
         }
 
-        const newPerson = {
+        const personData = {
             name: document.getElementById('name').value,
             birthday: document.getElementById('birthday').value,
             affiliation: document.getElementById('affiliation').value,
@@ -191,12 +225,17 @@ document.addEventListener('DOMContentLoaded', () => {
             photo: photoDataUrl
         };
 
-        people.push(newPerson);
+        if (editIndex === -1) {
+            people.push(personData);
+        } else {
+            people[editIndex] = personData;
+            editIndex = -1;
+        }
+
         try {
             localStorage.setItem('people', JSON.stringify(people));
         } catch (error) {
             alert('저장 용량이 초과되었습니다. 너무 큰 사진은 피해주세요!');
-            people.pop();
             return;
         }
         

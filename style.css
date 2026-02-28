@@ -321,14 +321,19 @@ textarea {
     line-height: 1.6;
 }
 
-.delete-btn {
+.card-btns {
     position: absolute;
     top: 10px;
     right: 10px;
-    width: 24px;
-    height: 24px;
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+}
+
+.delete-btn, .edit-btn {
+    width: 26px;
+    height: 26px;
     background: rgba(255, 255, 255, 0.9);
-    color: #ff4757;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -336,5 +341,12 @@ textarea {
     justify-content: center;
     align-items: center;
     font-size: 16px;
-    z-index: 10;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
+.delete-btn { color: #ff4757; }
+.edit-btn { color: var(--primary-color); }
+
+.delete-btn:hover { background: #ff4757; color: white; }
+.edit-btn:hover { background: var(--primary-color); color: white; }
