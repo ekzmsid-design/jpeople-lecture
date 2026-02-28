@@ -22,12 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
         people.forEach((person, index) => {
             const card = document.createElement('div');
             card.className = 'person-card';
+            
+            const photoHtml = person.photo 
+                ? `<div class="card-img-wrapper"><img src="${person.photo}" class="card-img" alt="${person.name}"></div>`
+                : `<div class="card-img-wrapper"><span style="font-size: 40px;">👤</span></div>`;
+
             card.innerHTML = `
                 <button class="delete-btn" onclick="deletePerson(${index})">×</button>
-                <h3>${person.name}</h3>
-                <p><strong>🗓️ 생일:</strong> ${person.birthday || '미입력'}</p>
-                <p><strong>🏢 소속:</strong> ${person.affiliation || '미입력'}</p>
-                <div class="memo-text">${person.memo || '메모가 없습니다.'}</div>
+                ${photoHtml}
+                <div class="card-content">
+                    <h3>${person.name}</h3>
+                    <p><strong>🗓️ 생일:</strong> ${person.birthday || '미입력'}</p>
+                    <p><strong>🏢 소속:</strong> ${person.affiliation || '미입력'}</p>
+                    <div class="memo-text">${person.memo || '메모가 없습니다.'}</div>
+                </div>
             `;
             peopleList.appendChild(card);
         });
@@ -41,22 +49,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 데이터 추가 이벤트
-    personForm.addEventListener('submit', (e) => {
+    personForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        const photoFile = document.getElementById('photo').files[0];
+        let photoDataUrl = '';
+
+        if (photoFile) {
+            photoDataUrl = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(photoFile);
+            });
+        }
 
         const newPerson = {
             name: document.getElementById('name').value,
             birthday: document.getElementById('birthday').value,
             affiliation: document.getElementById('affiliation').value,
-            memo: document.getElementById('memo').value
+            memo: document.getElementById('memo').value,
+            photo: photoDataUrl
         };
 
         people.push(newPerson);
-        localStorage.setItem('people', JSON.stringify(people));
+        
+        try {
+            localStorage.setItem('people', JSON.stringify(people));
+        } catch (error) {
+            alert('저장 용량이 초과되었습니다. 너무 큰 사진은 피해주세요!');
+            people.pop();
+            return;
+        }
         
         renderPeople();
         personForm.reset();
-        toggleModal(); // 저장 후 폼 닫기
+        toggleModal();
     });
 
     // 데이터 삭제 함수
