@@ -361,8 +361,124 @@ textarea {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.delete-btn { color: #ff4757; }
-.edit-btn { color: var(--primary-color); }
+/* Detail & Timeline Modal */
+.detail-modal {
+    max-width: 600px;
+    padding: 40px;
+    position: relative;
+}
 
-.delete-btn:hover { background: #ff4757; color: white; }
-.edit-btn:hover { background: var(--primary-color); color: white; }
+.detail-header {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.detail-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.detail-text h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 26px;
+}
+
+.detail-text p {
+    margin: 5px 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.timeline-section {
+    margin-top: 20px;
+}
+
+.timeline-section h3 {
+    font-size: 18px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.timeline-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 10px;
+}
+
+.timeline-item {
+    padding: 15px;
+    background-color: #f8faff;
+    border-left: 3px solid var(--primary-color);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.timeline-date {
+    display: block;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 5px;
+}
+
+.timeline-text {
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.timeline-input-group {
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.timeline-input-group input {
+    flex: 1;
+    border-radius: 20px;
+    padding: 10px 20px;
+    background-color: #f1f5f9;
+}
+
+.add-timeline-btn {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: #cbd5e1;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #64748b;
+}
+
+.card-content {
+    cursor: pointer;
+}
+
+.card-img-wrapper {
+    cursor: pointer;
+}
