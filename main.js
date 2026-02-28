@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelBtn = document.getElementById('cancel-btn');
     const photoInput = document.getElementById('photo');
     const photoPreview = document.getElementById('photo-preview');
+    const searchInput = document.getElementById('search-input');
 
     // 로컬 스토리지에서 데이터 불러오기
     let people = JSON.parse(localStorage.getItem('people')) || [];
@@ -38,10 +39,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 화면에 목록 렌더링하는 함수
-    function renderPeople() {
+    // 화면에 목록 렌더링하는 함수 (검색 키워드 추가)
+    function renderPeople(keyword = '') {
         peopleList.innerHTML = '';
-        people.forEach((person, index) => {
+        
+        const filteredPeople = people.filter(person => {
+            const searchStr = (person.name + person.affiliation + person.memo).toLowerCase();
+            return searchStr.includes(keyword.toLowerCase());
+        });
+
+        if (filteredPeople.length === 0) {
+            peopleList.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">검색 결과가 없습니다.</div>`;
+            return;
+        }
+
+        filteredPeople.forEach((person, index) => {
+            // 원본 배열에서의 실제 인덱스 찾기
+            const actualIndex = people.indexOf(person);
+            
             const card = document.createElement('div');
             card.className = 'person-card';
             
@@ -50,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : `<div class="card-img-wrapper"><span style="font-size: 60px;">👤</span></div>`;
 
             card.innerHTML = `
-                <button class="delete-btn" onclick="deletePerson(${index})">×</button>
+                <button class="delete-btn" onclick="deletePerson(${actualIndex})">×</button>
                 ${photoHtml}
                 <div class="card-content">
                     <h3>${person.name}</h3>
@@ -62,6 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
             peopleList.appendChild(card);
         });
     }
+
+    // 검색 입력 이벤트
+    searchInput.addEventListener('input', (e) => {
+        renderPeople(e.target.value);
+    });
 
     // 이벤트 리스너
     showFormBtn.addEventListener('click', toggleModal);
@@ -100,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
+        searchInput.value = ''; // 검색어 초기화
         renderPeople();
         toggleModal();
     });
@@ -109,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm('이 정보를 삭제하시겠습니까?')) {
             people.splice(index, 1);
             localStorage.setItem('people', JSON.stringify(people));
-            renderPeople();
+            renderPeople(searchInput.value);
         }
     };
 
