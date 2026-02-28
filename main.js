@@ -161,6 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const person = people[index];
         const groupName = groups.find(g => g.id === person.groupId)?.name || '없음';
         
+        const tagsHtml = person.tags && person.tags.length > 0
+            ? `<div class="card-tags" style="margin-top: 10px;">${person.tags.map(t => `<span class="tag">${t.startsWith('#') ? t : '#' + t}</span>`).join('')}</div>`
+            : '';
+
         detailInfo.innerHTML = `
             ${person.photo ? `<img src="${person.photo}" class="detail-img">` : '<div class="detail-img" style="display:flex;justify-content:center;align-items:center;background:#f0f0f0;"><span style="font-size:50px;">👤</span></div>'}
             <div class="detail-text">
@@ -169,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><strong>생일:</strong> ${person.birthday || '미입력'}</p>
                 <p><strong>소속:</strong> ${person.affiliation || '미입력'}</p>
                 <p><strong>기본 메모:</strong> ${person.memo || '없음'}</p>
+                ${tagsHtml}
             </div>
         `;
 
