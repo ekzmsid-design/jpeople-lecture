@@ -87,7 +87,10 @@
                         <!-- 타임라인 항목들이 여기에 추가됩니다 -->
                     </div>
                     <form id="timeline-form" class="timeline-input-group">
-                        <input type="text" id="timeline-content" placeholder="새로운 소식이나 만남 기록..." required>
+                        <div class="timeline-inputs">
+                            <input type="text" id="timeline-title" placeholder="제목 (예: 1화, 26.05.28)" required>
+                            <input type="text" id="timeline-content" placeholder="기록할 내용..." required>
+                        </div>
                         <button type="submit" class="add-timeline-btn">추가</button>
                     </form>
                 </div>

@@ -441,8 +441,9 @@ textarea {
 
 .timeline-date {
     display: block;
-    font-size: 11px;
-    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-color);
     margin-bottom: 5px;
 }
 
@@ -454,19 +455,33 @@ textarea {
 
 .timeline-input-group {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     padding-top: 15px;
     border-top: 1px solid #eee;
 }
 
-.timeline-input-group input {
+.timeline-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.timeline-inputs input#timeline-title {
     flex: 1;
+}
+
+.timeline-inputs input#timeline-content {
+    flex: 2;
+}
+
+.timeline-input-group input {
     border-radius: 20px;
     padding: 10px 20px;
     background-color: #f1f5f9;
 }
 
 .add-timeline-btn {
+    width: 100%;
     padding: 10px 20px;
     background-color: var(--primary-color);
     color: white;

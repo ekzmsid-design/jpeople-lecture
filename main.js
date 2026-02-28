@@ -186,10 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 최신순으로 렌더링하기 위해 복사본을 만들어 뒤집거나, 인덱스를 계산해서 처리
         timelineList.innerHTML = timeline.map((item, idx) => `
             <div class="timeline-item">
-                <span class="timeline-date">${item.date}</span>
+                <span class="timeline-date">${item.title}</span>
                 <div class="timeline-text">${item.content}</div>
                 <button class="timeline-delete-btn" onclick="deleteTimelineItem(${idx})">×</button>
             </div>
@@ -208,24 +207,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // 타임라인 항목 추가
     timelineForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        const title = document.getElementById('timeline-title').value.trim();
         const content = timelineContent.value.trim();
-        if (content && detailIndex !== -1) {
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-            
+        
+        if (title && content && detailIndex !== -1) {
             if (!people[detailIndex].timeline) {
                 people[detailIndex].timeline = [];
             }
             
             people[detailIndex].timeline.push({
-                date: dateStr,
+                title: title,
                 content: content
             });
 
             localStorage.setItem('people', JSON.stringify(people));
+            document.getElementById('timeline-title').value = '';
             timelineContent.value = '';
             renderTimeline();
-            // 메인 화면 갱신은 필요 없지만 데이터 동기화를 위해
         }
     });
 
