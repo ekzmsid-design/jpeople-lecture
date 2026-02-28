@@ -321,6 +321,22 @@ textarea {
     line-height: 1.6;
 }
 
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.tag {
+    font-size: 11px;
+    background-color: #f1f5f9;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
 .card-btns {
     position: absolute;
     top: 10px;

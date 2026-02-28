@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const groupTabs = document.getElementById('group-tabs');
     const personGroupSelect = document.getElementById('person-group');
     const modalTitle = document.querySelector('#form-container h2');
+    const tagsInput = document.getElementById('tags');
 
     // 로컬 스토리지 데이터 불러오기
     let people = JSON.parse(localStorage.getItem('people')) || [];
@@ -99,10 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
             filteredPeople = filteredPeople.filter(p => p.groupId === currentGroupId);
         }
 
-        // 검색어 필터링
+        // 검색어 필터링 (태그 포함)
         if (keyword) {
             filteredPeople = filteredPeople.filter(p => {
-                const searchStr = (p.name + p.affiliation + p.memo).toLowerCase();
+                const tagStr = p.tags ? p.tags.join(' ') : '';
+                const searchStr = (p.name + p.affiliation + p.memo + tagStr).toLowerCase();
                 return searchStr.includes(keyword);
             });
         }
@@ -123,6 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `<div class="card-img-wrapper"><img src="${person.photo}" class="card-img" alt="${person.name}"></div>`
                 : `<div class="card-img-wrapper"><span style="font-size: 60px;">👤</span></div>`;
 
+            // 태그 HTML 생성
+            const tagsHtml = person.tags && person.tags.length > 0
+                ? `<div class="card-tags">${person.tags.map(t => `<span class="tag">${t.startsWith('#') ? t : '#' + t}</span>`).join('')}</div>`
+                : '';
+
             card.innerHTML = `
                 <div class="card-btns">
                     <button class="edit-btn" onclick="editPerson(${actualIndex})">✎</button>
@@ -135,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><strong>🗓️ 생일:</strong> ${person.birthday || '미입력'}</p>
                     <p><strong>🏢 소속:</strong> ${person.affiliation || '미입력'}</p>
                     <div class="memo-text">${person.memo || '메모가 없습니다.'}</div>
+                    ${tagsHtml}
                 </div>
             `;
             peopleList.appendChild(card);
@@ -152,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('affiliation').value = person.affiliation || '';
         document.getElementById('person-group').value = person.groupId || '';
         document.getElementById('memo').value = person.memo || '';
+        tagsInput.value = person.tags ? person.tags.join(' ') : '';
         
         if (person.photo) {
             photoPreview.innerHTML = `<img src="${person.photo}" alt="Preview">`;
@@ -216,13 +225,18 @@ document.addEventListener('DOMContentLoaded', () => {
             photoDataUrl = people[editIndex].photo || '';
         }
 
+        // 태그 처리 (공백으로 구분된 문자열을 배열로 변환)
+        const tagsValue = tagsInput.value.trim();
+        const tagsArray = tagsValue ? tagsValue.split(/\s+/).filter(t => t !== '') : [];
+
         const personData = {
             name: document.getElementById('name').value,
             birthday: document.getElementById('birthday').value,
             affiliation: document.getElementById('affiliation').value,
             memo: document.getElementById('memo').value,
             groupId: personGroupSelect.value,
-            photo: photoDataUrl
+            photo: photoDataUrl,
+            tags: tagsArray
         };
 
         if (editIndex === -1) {
